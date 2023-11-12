@@ -21,3 +21,4 @@
 go.work
 builds/
 *.7z
+*.wasm
