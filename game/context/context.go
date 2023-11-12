@@ -15,6 +15,7 @@ type Context struct {
 	ViewOffsetY int
 	Width       int
 	Height      int
+	CursorState int
 }
 
 func NewContext(fileSystem fs.FS, inputSystem *input.System) *Context {

@@ -19,7 +19,11 @@ type Chunk struct {
 
 func (c *Chunk) Draw(ctx *context.Context, screen *ebiten.Image, viewVis *vis.BlockRange) {
 	// draw chunk borders (debug)
-	// vector.StrokeRect(screen, float32(c.X*consts.CHUNK_SIZE*consts.BLOCK_SIZE)+float32(ctx.ViewOffsetX), float32(c.Y*consts.CHUNK_SIZE*consts.BLOCK_SIZE)+float32(ctx.ViewOffsetY), consts.CHUNK_SIZE*consts.BLOCK_SIZE, consts.CHUNK_SIZE*consts.BLOCK_SIZE, 1, color.White, false)
+	/*vector.StrokeRect(screen,
+	float32(c.X*consts.CHUNK_SIZE*consts.BLOCK_SIZE)+float32(ctx.ViewOffsetX),
+	float32(c.Y*consts.CHUNK_SIZE*consts.BLOCK_SIZE)+float32(ctx.ViewOffsetY),
+	consts.CHUNK_SIZE*consts.BLOCK_SIZE, consts.CHUNK_SIZE*consts.BLOCK_SIZE,
+	1, color.White, false)*/
 	chunkStartX := c.X * consts.CHUNK_SIZE
 	chunkStartY := c.Y * consts.CHUNK_SIZE
 	for dx := 0; dx < consts.CHUNK_SIZE; dx++ {
@@ -37,14 +41,12 @@ func (c *Chunk) Draw(ctx *context.Context, screen *ebiten.Image, viewVis *vis.Bl
 				continue
 			}
 
-			// fmt.Println("chunk.go: calling renderblock")
 			render.RenderBlock(ctx, screen, globalX, globalY, block)
 		}
 	}
 }
 
 func (c *Chunk) GetBlock(x int, y int) int {
-	// fmt.Println("chunk GetBlock", x, y)
 	return c.Blocks[x][y]
 }
 

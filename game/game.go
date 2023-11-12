@@ -20,7 +20,7 @@ var FileSystem embed.FS
 var InputHandler *input.Handler
 var CanvasWidth float64
 var CanvasHeight float64
-var WindowScale = 2.0
+var WindowScale = 1.0
 
 type Game struct {
 	World       *world.World
@@ -63,6 +63,8 @@ func StartGame(fs *embed.FS) {
 	})
 	game.Context = context.NewContext(fs, &game.InputSystem)
 
+	LoadCursorImages(game.Context)
+
 	// load test world
 	game.World = world.CreateTestWorld(game.Context)
 
@@ -74,14 +76,4 @@ func StartGame(fs *embed.FS) {
 	if err := ebiten.RunGame(&game); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func DrawCustomCursor(ctx *context.Context, screen *ebiten.Image) {
-	cursorImg := ctx.Cache.GetImage("assets/cursor.png")
-	op := &ebiten.DrawImageOptions{
-		Filter: ebiten.FilterNearest,
-	}
-	cursorX, cursorY := ebiten.CursorPosition()
-	op.GeoM.Translate(float64(cursorX), float64(cursorY))
-	screen.DrawImage(cursorImg, op)
 }

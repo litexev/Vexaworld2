@@ -44,6 +44,13 @@ func (b *BlockPlacer) Update(ctx *context.Context) {
 	mouseX, mouseY := ebiten.CursorPosition()
 	placeKey := ctx.Input.ActionIsPressed(keymap.ActionPlace)
 	destroyKey := ctx.Input.ActionIsPressed(keymap.ActionModifierDestroy)
+	if destroyKey {
+		ctx.CursorState = consts.CURSOR_DELETE
+	} else if placeKey {
+		ctx.CursorState = consts.CURSOR_PLACE
+	} else {
+		ctx.CursorState = consts.CURSOR_MAIN
+	}
 	x := snapToGrid(float64(mouseX-int(ctx.ViewOffsetX)), float64(consts.BLOCK_SIZE))
 	y := snapToGrid(float64(mouseY-int(ctx.ViewOffsetY)), float64(consts.BLOCK_SIZE))
 	if x == b.lastX && y == b.lastY && !ctx.Input.ActionIsJustPressed(keymap.ActionPlace) && !b.changeNextFrame {
@@ -58,7 +65,6 @@ func (b *BlockPlacer) Update(ctx *context.Context) {
 	} else {
 		b.SetImage(b.imagePicker)
 	}
-
 	if placeKey && placeMode && !destroyKey {
 		b.World.SetBlock(x, y, b.BlockToPlace)
 		b.changeNextFrame = true

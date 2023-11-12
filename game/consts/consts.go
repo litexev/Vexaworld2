@@ -8,4 +8,8 @@ const (
 	SIDE_VEL        = 0.15
 	JUMP_VEL        = 0.23
 	DEFAULT_GRAVITY = 0.008
+	// CURSORS
+	CURSOR_MAIN   = 0
+	CURSOR_PLACE  = 1
+	CURSOR_DELETE = 2
 )
