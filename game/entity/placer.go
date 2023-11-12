@@ -1,10 +1,11 @@
 package entity
 
 import (
-	"math"
+	"strconv"
 	"vexaworld/game/consts"
 	"vexaworld/game/context"
 	"vexaworld/game/keymap"
+	"vexaworld/game/utils"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -30,20 +31,21 @@ func CreateBlockPlacer(world IWorld) *BlockPlacer {
 func (b *BlockPlacer) Init(ctx *context.Context) {
 	b.Entity.Init(ctx)
 	b.imagePicker = ctx.Cache.GetImage("assets/picker.png")
-	b.imageBlock = ctx.Cache.GetImage("assets/blocks/3.png")
+	b.SetBlock(ctx, 3)
 	b.SetImage(b.imagePicker)
 	b.shouldRender = true
-}
-
-func snapToGrid(num, size float64) int {
-	return int(math.Floor(num / size))
 }
 
 func (b *BlockPlacer) Update(ctx *context.Context) {
 	b.Entity.Update(ctx)
 	mouseX, mouseY := ebiten.CursorPosition()
 	placeKey := ctx.Input.ActionIsPressed(keymap.ActionPlace)
+	placeKeyFirstFrame := ctx.Input.ActionIsJustPressed(keymap.ActionPlace)
 	destroyKey := ctx.Input.ActionIsPressed(keymap.ActionModifierDestroy)
+	copyKey := ctx.Input.ActionIsJustPressed(keymap.ActionCopyBlock)
+	if copyKey {
+		b.changeNextFrame = true
+	}
 	if destroyKey {
 		ctx.CursorState = consts.CURSOR_DELETE
 	} else if placeKey {
@@ -51,16 +53,19 @@ func (b *BlockPlacer) Update(ctx *context.Context) {
 	} else {
 		ctx.CursorState = consts.CURSOR_MAIN
 	}
-	x := snapToGrid(float64(mouseX-int(ctx.ViewOffsetX)), float64(consts.BLOCK_SIZE))
-	y := snapToGrid(float64(mouseY-int(ctx.ViewOffsetY)), float64(consts.BLOCK_SIZE))
-	if x == b.lastX && y == b.lastY && !ctx.Input.ActionIsJustPressed(keymap.ActionPlace) && !b.changeNextFrame {
+
+	x := utils.SnapToGrid(mouseX-ctx.ViewOffsetX, consts.BLOCK_SIZE)
+	y := utils.SnapToGrid(mouseY-ctx.ViewOffsetY, consts.BLOCK_SIZE)
+	// middle click to copy block
+	if x == b.lastX && y == b.lastY && !placeKeyFirstFrame && !b.changeNextFrame {
 		return
 	}
 	b.lastX, b.lastY = x, y
 	b.changeNextFrame = false
 
-	placeMode := b.World.GetBlock(x, y) == 0
-	if placeMode {
+	block := b.World.GetBlock(x, y)
+	placeMode := block == 0
+	if placeMode && !destroyKey {
 		b.SetImage(b.imageBlock)
 	} else {
 		b.SetImage(b.imagePicker)
@@ -75,5 +80,14 @@ func (b *BlockPlacer) Update(ctx *context.Context) {
 		b.changeNextFrame = true
 	}
 
+	if copyKey && !placeMode {
+		b.SetBlock(ctx, block)
+	}
+
 	b.X, b.Y = float64(x), float64(y)
+}
+
+func (b *BlockPlacer) SetBlock(ctx *context.Context, block int) {
+	b.BlockToPlace = block
+	b.imageBlock = ctx.Cache.GetImage("assets/blocks/" + strconv.Itoa(block) + ".png")
 }

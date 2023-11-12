@@ -23,8 +23,8 @@ func Clamp(f, low, high float64) float64 {
 	return f
 }
 
-func SnapToGrid(number, step int) int {
-	return int(math.Floor(float64(number+(step/2)) / float64(step)))
+func SnapToGrid(num, size int) int {
+	return int(math.Floor(float64(num) / float64(size)))
 }
 
 func Lerp(a, b float64, t float64) float64 {

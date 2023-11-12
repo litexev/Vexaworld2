@@ -149,7 +149,7 @@ func (w *World) LoadChunksAroundPlayer(radius int) {
 }
 
 func (w *World) UnloadChunk(x, y int) {
-	// delete(w.Chunks, [2]int{x, y})
+	delete(w.Chunks, [2]int{x, y})
 }
 func (w *World) AddChunk(chunk *chunk.Chunk) {
 	w.Chunks[[2]int{chunk.X, chunk.Y}] = chunk

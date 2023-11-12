@@ -20,7 +20,7 @@ var FileSystem embed.FS
 var InputHandler *input.Handler
 var CanvasWidth float64
 var CanvasHeight float64
-var WindowScale = 1.0
+var WindowScale = 2.0
 
 type Game struct {
 	World       *world.World

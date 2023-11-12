@@ -12,6 +12,7 @@ const (
 	ActionToggleFPS
 	ActionPlace
 	ActionModifierDestroy
+	ActionCopyBlock
 )
 
 var Keymap = input.Keymap{
@@ -21,4 +22,5 @@ var Keymap = input.Keymap{
 	ActionToggleFPS:       {input.KeyF},
 	ActionPlace:           {input.KeyMouseLeft},
 	ActionModifierDestroy: {input.KeyControlLeft, input.KeyControlRight},
+	ActionCopyBlock:       {input.KeyMouseMiddle},
 }
